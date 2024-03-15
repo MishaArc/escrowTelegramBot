@@ -7,7 +7,7 @@ from aiogram.types import (
     Message,
     ReplyKeyboardRemove,
 )
-from utils import RoleFilter, get_data_from_db, button_builder, global_command_filter, GroupChatFilter
+from utils import RoleFilter, get_data_from_db, button_builder, global_command_filter, GroupChatFilter, send_divider
 from aiogram.enums import ParseMode
 from config import collection_lobby, MODERATOR_USER_ID
 from states.user_registration import UserRegistration

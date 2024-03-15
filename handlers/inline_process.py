@@ -7,7 +7,7 @@ from aiogram.types import (
     ReplyKeyboardRemove,
 )
 import logging
-from utils import global_command_filter, RoleFilter, button_builder
+from utils import global_command_filter, RoleFilter, button_builder, send_divider
 from wallet_processing import get_incoming_transactions, send_trc20_tokens, collection_trans
 from config import collection_lobby
 from states.user_registration import UserRegistration
@@ -70,6 +70,7 @@ async def submitted_form_handler(callback: types.CallbackQuery, state: FSMContex
                     ["The data is incorrect. Submit again", 'Continue with the deal'],
                     ["resubmit_form", "continue_deal"])
                 reply_keyboard.adjust(1, 1)
+                await send_divider(callback)
                 await callback.message.answer(deal_data,
                                               reply_markup=reply_keyboard.as_markup(),
                                               parse_mode=ParseMode.HTML)
@@ -121,7 +122,7 @@ async def handle_incorrect_data_submission(callback: types.CallbackQuery) -> Non
 
     # Prepare the inline keyboard with the button to confirm form resubmission
     reply_keyboard = await button_builder(["Confirm form resubmission"], ["submitted_form"])
-
+    await send_divider(callback)
     # Send the message with the inline keyboard
     await callback.message.answer(
         message_text,
@@ -186,6 +187,7 @@ async def continue_deal(callback: types.CallbackQuery) -> None:
         )
 
         reply_keyboard = await button_builder(["Sent funds"], ["sent_funds"])
+        await send_divider(callback)
         await callback.message.answer(payment_instructions,
                                       reply_markup=reply_keyboard.as_markup(),
                                       parse_mode=ParseMode.HTML)
@@ -223,7 +225,7 @@ async def sent_funds_handler(callback: types.CallbackQuery, state: FSMContext) -
                     "You can do this by using the <code>/release_funds</code> command.\n\n"
                     "Need help or have questions along the way? Don't hesitate to reach out!"
                 )
-
+                await send_divider(callback)
                 await callback.message.answer(
                     message_text,
                     disable_web_page_preview=True,
@@ -289,6 +291,7 @@ async def send_random_value(callback: types.CallbackQuery, state: FSMContext) ->
                     parse_mode=ParseMode.HTML
                 )
     elif user_data and not user_data.get("Seller's Wallet Address"):
+        await send_divider(callback)
         await callback.message.answer(
             "🚫 <b>Wallet Not Found</b> 🚫\n\n"
             "It seems we don't have a wallet address on file for the seller. No problem, though! Here’s how to fix it:\n\n"

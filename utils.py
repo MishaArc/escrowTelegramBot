@@ -5,8 +5,14 @@ from aiogram.types import (
     KeyboardButton,
     Message
 )
+from aiogram.enums import ParseMode
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 import random
+
+
+async def send_divider(callback: types.CallbackQuery):
+    # Send a visual separator
+    await callback.message.answer("────────────────────────", parse_mode=ParseMode.HTML)
 
 
 async def global_command_filter(message: Message, state: FSMContext) -> bool:
