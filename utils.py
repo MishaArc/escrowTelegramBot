@@ -11,17 +11,16 @@ import random
 
 
 async def send_divider(callback: types.CallbackQuery):
-    # Send a visual separator
     await callback.message.answer("────────────────────────", parse_mode=ParseMode.HTML)
 
-
+# test
 async def global_command_filter(message: Message, state: FSMContext) -> bool:
     ALLOWED_COMMANDS = ["/cancel_trade", "/sent_wallet"]
     current_state = await state.get_state()
     is_command = any(entity.type == 'bot_command' for entity in (message.entities or []))
 
     if current_state is not None and is_command:
-        if message.text.split()[0] in ALLOWED_COMMANDS:  # Check if the command is in the allowed list
+        if message.text.split()[0] in ALLOWED_COMMANDS:  
             return True
         else:
             await message.reply("You are currently in a deal creation process. Use /cancel_trade to exit.")
@@ -40,26 +39,19 @@ class RoleFilter(Filter):
         self.collection = collection
 
     async def __call__(self, callback: types.CallbackQuery, state: FSMContext) -> bool:
-        # Assuming the username from Telegram's callback query
         username = callback.from_user.username
 
-        # Dynamically create the field name based on the role_needed
         user_role_field = f"{self.role_needed}'s Telegram User"
 
-        # Construct the query to find if an active deal exists for this user in the specified role
         query = {user_role_field: username, "Status": "Active"}
 
-        # Execute the query
         deal_exists = await self.collection.find_one(query)
 
-        # Return True if a document was found, indicating an active deal exists for the user in the specified role
         return bool(deal_exists)
 
 
 async def generate_unique_id(collection, max_value=9999):
-    # Generates a unique ID for a deal, ensuring no active deal has the same ID.
     unique_id = random.randint(1, max_value)
-    # Check if the ID is unique among active deals
     while await collection.find_one({'unique_id': unique_id, 'Status': 'Active'}):
         unique_id = random.randint(1, max_value)
     return unique_id
